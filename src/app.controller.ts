@@ -17,7 +17,7 @@ export class AppController {
   getCoffeeById(@Param('id') id: string) {
     return this.appService.getCoffeeById(id);
   }
-  @Post('/coffees')
+  @Post('/coffees-create')
   createCoffee(@Body() coffee: Coffee) {
     return this.appService.createCoffee(coffee);
   }
