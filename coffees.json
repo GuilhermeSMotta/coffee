@@ -1,0 +1,50 @@
+[
+  {
+    "nome": "Café Arábica",
+    "tipo": "grão",
+    "quantidade": 100,
+    "preco": 10.5,
+    "id": "1",
+    "descricao": "Café Arábica de alta qualidade.",
+    "tags": [
+      "aroma",
+      "sabor"
+    ]
+  },
+  {
+    "nome": "Café Robusta",
+    "tipo": "moído",
+    "quantidade": 50,
+    "preco": 8,
+    "id": "2",
+    "descricao": "Café Robusta forte e encorpado.",
+    "tags": [
+      "intenso",
+      "cafeína"
+    ]
+  },
+  {
+    "nome": "Café Blend",
+    "tipo": "grão",
+    "quantidade": 75,
+    "preco": 12,
+    "id": "3",
+    "descricao": "Mistura de grãos Arábica e Robusta.",
+    "tags": [
+      "equilibrado",
+      "aroma"
+    ]
+  },
+  {
+    "nome": "Café Descafeinado",
+    "tipo": "moído",
+    "quantidade": 30,
+    "preco": 15,
+    "id": "4",
+    "descricao": "Café sem cafeína, ideal para a noite.",
+    "tags": [
+      "suave",
+      "descafeinado"
+    ]
+  }
+]

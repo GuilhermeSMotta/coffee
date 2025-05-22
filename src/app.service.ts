@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { readFileSync, writeFileSync } from 'node:fs';
 
 export interface Coffee {
   nome: string;           // obrigatório
@@ -12,26 +13,7 @@ export interface Coffee {
 
 @Injectable()
 export class AppService {
-  private coffees: Coffee[] = [
-    {
-      nome: 'Café Arábica',
-      tipo: 'grão',
-      quantidade: 100,
-      preco: 10.5,
-      id: '1',
-      descricao: 'Café Arábica de alta qualidade.',
-      tags: ['aroma', 'sabor'],
-    },
-    {
-      nome: 'Café Robusta',
-      tipo: 'moído',
-      quantidade: 50,
-      preco: 8.0,
-      id: '2',
-      descricao: 'Café Robusta forte e encorpado.',
-      tags: ['intenso', 'cafeína'],
-    }
-  ];
+  private coffees: Coffee[] = JSON.parse(readFileSync('coffees.json', 'utf-8'));
   getHello(): string {
     return 'Hello World!';
   }
@@ -47,6 +29,12 @@ export class AppService {
       return "Café já existe!";
     }
     this.coffees.push(coffee);
-    return "Café adicionado com sucesso!";
+    writeFileSync('coffees.json', JSON.stringify(this.coffees, null, 2));
+    const mensagem = {
+      "mensagem": "Café criado com sucesso!",
+      "cafe": coffee
+    }
+    return mensagem;
   }
 }
+
