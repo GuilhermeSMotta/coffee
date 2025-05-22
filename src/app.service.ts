@@ -42,6 +42,11 @@ export class AppService {
     return this.coffees.find(coffee => coffee.id === id);
   }
   createCoffee(coffee: Coffee) {
+    const existingCoffee = this.coffees.find(c => c.id === coffee.id);
+    if (existingCoffee) {
+      return "Café já existe!";
+    }
     this.coffees.push(coffee);
+    return "Café adicionado com sucesso!";
   }
 }

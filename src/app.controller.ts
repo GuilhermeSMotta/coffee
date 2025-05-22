@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { AppService, Coffee } from './app.service';
 
 @Controller()
@@ -13,12 +13,12 @@ export class AppController {
   getCoffees() {
     return this.appService.getCoffees();
   }
-  @Get('/coffees/:id')
-  getCoffeeById(id: string) {
+  @Get('/coffees/:id/detalhes')
+  getCoffeeById(@Param('id') id: string) {
     return this.appService.getCoffeeById(id);
   }
   @Post('/coffees')
   createCoffee(@Body() coffee: Coffee) {
-    this.appService.createCoffee(coffee);
+    return this.appService.createCoffee(coffee);
   }
 }
