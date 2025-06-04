@@ -9,7 +9,8 @@
     "tags": [
       "aroma",
       "sabor"
-    ]
+    ],
+    "dataCriacao": "2023-03-05"
   },
   {
     "nome": "Café Robusta",
@@ -21,7 +22,8 @@
     "tags": [
       "intenso",
       "cafeína"
-    ]
+    ],
+    "dataCriacao": "2025-02-16"
   },
   {
     "nome": "Café Blend",
@@ -33,7 +35,8 @@
     "tags": [
       "equilibrado",
       "aroma"
-    ]
+    ],
+    "dataCriacao": "2024-10-20"
   },
   {
     "nome": "Café Descafeinado",
@@ -45,6 +48,12 @@
     "tags": [
       "suave",
       "descafeinado"
-    ]
+    ],
+    "dataCriacao": "2022-11-03"
+  },
+  {
+    "nome": "Chá Gelado",
+    "tipo": "especial",
+    "id": "5"
   }
 ]

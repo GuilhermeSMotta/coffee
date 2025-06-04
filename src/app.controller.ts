@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { AppService, Coffee } from './app.service';
 
 @Controller()
@@ -16,6 +16,14 @@ export class AppController {
   @Get('/coffees/:id/detalhes')
   getCoffeeById(@Param('id') id: string) {
     return this.appService.getCoffeeById(id);
+  }
+  @Get('/coffees-search')
+  getCoffeeByQuery(@Query('tag') tag: string) {
+    return this.appService.getCoffeesQuery(tag);
+  }
+  @Get('/coffees-search')
+  getCoffeeByQueryDate(@Query('dataCriacao') dataInicial: string, dataFinal: string) {
+    return this.appService.getCoffeesQueryDate(dataInicial, dataFinal);
   }
   @Post('/coffees-create')
   createCoffee(@Body() coffee: Coffee) {
