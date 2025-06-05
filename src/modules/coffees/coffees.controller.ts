@@ -1,9 +1,10 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { AppService, Coffee } from './app.service';
+import { CoffeesService } from './coffees.service';
+import { Coffee } from './dtos/coffees.dto';
 
 @Controller()
-export class AppController {
-  constructor(private readonly appService: AppService) {}
+export class CoffeesController {
+  constructor(private readonly appService: CoffeesService) {}
 
   @Get()
   getHello(): string {
@@ -24,6 +25,11 @@ export class AppController {
   @Get('/coffees-search')
   getCoffeeByQueryDate(@Query('dataCriacao') dataInicial: string, dataFinal: string) {
     return this.appService.getCoffeesQueryDate(dataInicial, dataFinal);
+  }
+  @Get('/coffee-query-all')
+  getCoffeeByQueryAll(@Query() coffee: Coffee) {
+    console.log(coffee);
+    return this.appService.getCoffeesQueryAll(coffee);
   }
   @Post('/coffees-create')
   createCoffee(@Body() coffee: Coffee) {

@@ -1,19 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { readFileSync, writeFileSync } from 'node:fs';
-
-export interface Coffee {
-  nome: string;           // obrigatório
-  tipo: string;           // obrigatório
-  quantidade?: number;
-  preco?: number;
-  id: string;             // obrigatório
-  descricao?: string;
-  tags?: string[];
-  dataCriacao?: string;
-}
+import { Coffee } from './dtos/coffees.dto';
 
 @Injectable()
-export class AppService {
+export class CoffeesService {
   private coffees: Coffee[] = JSON.parse(readFileSync('coffees.json', 'utf-8'));
   getHello(): string {
     return 'Hello World!';
@@ -59,6 +49,27 @@ export class AppService {
         'nome': '404 - Café não encontrado!',
         'tipo': 'Erro',
         'id': `${dataInicial}-${dataFinal}`
+      }];
+    }
+    return filteredCoffees;
+  }
+  getCoffeesQueryAll(coffee: Coffee): Coffee[] {
+    const { nome, tipo, quantidade, preco, id, descricao, tags, dataCriacao } = coffee;
+    const filteredCoffees = this.coffees.filter(c => {
+      return (!nome || c.nome.includes(nome)) &&
+             (!tipo || c.tipo.includes(tipo)) &&
+             (quantidade === undefined || c.quantidade === quantidade) &&
+             (preco === undefined || c.preco === preco) &&
+             (!id || c.id === id) &&
+             (!descricao || c.descricao?.includes(descricao)) &&
+             (!tags || (c.tags && c.tags.some(tag => tags.includes(tag)))) &&
+             (!dataCriacao || new Date(c.dataCriacao || '') >= new Date(dataCriacao));
+    });
+    if (filteredCoffees.length === 0) {
+      return [{
+        'nome': '404 - Café não encontrado!',
+        'tipo': 'Erro',
+        'id': id || 'Consulta'
       }];
     }
     return filteredCoffees;
