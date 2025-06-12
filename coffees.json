@@ -55,5 +55,13 @@
     "nome": "Chá Gelado",
     "tipo": "especial",
     "id": "5"
+  },
+  {
+    "nome": "Capuccino",
+    "tipo": "especial",
+    "quantidade": 75,
+    "preco": 12,
+    "id": "6",
+    "descricao": "Capuccino tradicional."
   }
 ]

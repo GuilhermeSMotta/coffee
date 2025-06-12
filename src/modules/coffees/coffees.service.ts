@@ -1,17 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { Coffee } from './dtos/coffees.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class CoffeesService {
-  private coffees: Coffee[] = JSON.parse(readFileSync('coffees.json', 'utf-8'));
+  private coffees: Coffee[] = [];
+
+  constructor(private readonly prisma: PrismaService) {
+    this.initializeCoffees();
+  }
+
+  private async initializeCoffees() {
+    this.coffees = await this.prisma.coffee.findMany({
+      select: {
+        nome: true,
+        tipo: true,
+        preco: true,
+        id: true,
+        descricao: true,
+        tags: true
+      }
+    }) as unknown as Coffee[];
+  }
+
+
+  //private coffees: Coffee[] = JSON.parse(readFileSync('coffees.json', 'utf-8'));
   getHello(): string {
     return 'Hello World!';
   }
   getCoffees(): Coffee[] {
+    if (this.coffees.length === 0) {
+      return [{
+        'nome': '404 - Café não encontrado!',
+        'tipo': 'Erro',
+        'id': 0
+      }];
+    }
     return this.coffees;
   }
-  getCoffeeById(id: string): Coffee | undefined {
+  getCoffeeById(id: number): Coffee | undefined {
     if (this.coffees.find(coffee => coffee.id === id) === undefined) {
       return {
         'nome': '404 - Café não encontrado!',
@@ -31,7 +59,7 @@ export class CoffeesService {
       return [{
         'nome': '404 - Café não encontrado!',
         'tipo': 'Erro',
-        'id': tag
+        'id': 0
       }];
     }
     return filteredCoffees;
@@ -47,8 +75,8 @@ export class CoffeesService {
     if (filteredCoffees.length === 0) {
       return [{
         'nome': '404 - Café não encontrado!',
-        'tipo': 'Erro',
-        'id': `${dataInicial}-${dataFinal}`
+        'tipo': `Erro - ${dataInicial}-${dataFinal}`,
+        'id': 0
       }];
     }
     return filteredCoffees;
@@ -69,26 +97,65 @@ export class CoffeesService {
       return [{
         'nome': '404 - Café não encontrado!',
         'tipo': 'Erro',
-        'id': id || 'Consulta'
+        'id': id || 0
       }];
     }
     return filteredCoffees;
   }
   createCoffee(coffee: Coffee) {
-    const existingCoffee = this.coffees.find(c => c.id === coffee.id);
-    if (!coffee.nome || !coffee.tipo || !coffee.id) {
+    const existingCoffee = this.coffees.find(c => c.nome === coffee.nome);
+    if (!coffee.nome || !coffee.tipo) {
       return "400 - Bad Request: Campos obrigatórios não preenchidos!";
     }
     if (existingCoffee) {
       return "400 - Bad Request: Café já existe!";
     }
-    this.coffees.push(coffee);
-    writeFileSync('coffees.json', JSON.stringify(this.coffees, null, 2));
+    // Adiciona café à lista e salva no prisma
+    this.prisma.coffee.create({
+      data: {
+        nome: coffee.nome,
+        tipo: coffee.tipo,
+        preco: Number(coffee.preco),
+        descricao: String(coffee.descricao),
+        tags: coffee.tags
+          ? {
+              create: coffee.tags.map(tag => ({ nome: tag }))
+            }
+          : undefined
+      }
+    }).catch(error => {
+      console.error("Erro ao criar café no banco de dados:", error);
+      return "500 - Internal Server Error: Erro ao criar café no banco de dados!";
+    });
     const mensagem = {
       "mensagem": "201 - Café criado com sucesso!",
       "cafe": coffee
     }
     return mensagem;
   }
+  async deleteCoffee(id: number) {
+  const coffeeIndex = this.coffees.findIndex(coffee => coffee.id === Number(id));
+  if (coffeeIndex === -1) {
+    return "404 - Café não encontrado!";
+  }
+
+  try {
+    // Primeiro, remova as relações de tags (ajuste o nome do modelo conforme seu schema)
+    await this.prisma.tagCafe.deleteMany({
+      where: { id: Number(id) }
+    });
+
+    // Agora, remova o café
+    await this.prisma.coffee.delete({
+      where: { id: Number(id) }
+    });
+
+    this.coffees.splice(coffeeIndex, 1);
+    return "200 - Café deletado com sucesso!";
+  } catch (error) {
+    console.error("Erro ao deletar café no banco de dados:", error);
+    return "500 - Internal Server Error: Erro ao deletar café no banco de dados!";
+  }
+}
 }
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
 import { CoffeesService } from './coffees.service';
 import { Coffee } from './dtos/coffees.dto';
 
@@ -15,7 +15,7 @@ export class CoffeesController {
     return this.appService.getCoffees();
   }
   @Get('/coffees/:id/detalhes')
-  getCoffeeById(@Param('id') id: string) {
+  getCoffeeById(@Param('id') id: number) {
     return this.appService.getCoffeeById(id);
   }
   @Get('/coffees-search')
@@ -34,5 +34,9 @@ export class CoffeesController {
   @Post('/coffees-create')
   createCoffee(@Body() coffee: Coffee) {
     return this.appService.createCoffee(coffee);
+  }
+  @Delete('/coffees/:id')
+  deleteCoffee(@Param('id') id: number) {
+    return this.appService.deleteCoffee(id);
   }
 }

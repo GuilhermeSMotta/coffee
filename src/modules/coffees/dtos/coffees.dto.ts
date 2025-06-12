@@ -3,7 +3,7 @@ export class Coffee {
     tipo: string;           // obrigatório
     quantidade?: number;
     preco?: number;
-    id: string;             // obrigatório
+    id?: number;             // obrigatório
     descricao?: string;
     tags?: string[];
     dataCriacao?: string;
